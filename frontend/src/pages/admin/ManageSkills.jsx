@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { FaTrash, FaPlus, FaEdit, FaTimes } from 'react-icons/fa';
 
@@ -15,7 +15,7 @@ const ManageSkills = () => {
 
     const fetchSkills = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/skills');
+            const { data } = await api.get('/skills');
             setSkills(data);
         } catch (error) {
             console.error('Error fetching skills:', error);
@@ -33,9 +33,9 @@ const ManageSkills = () => {
 
             if (editingId) {
                 const { _id, createdAt, updatedAt, __v, ...updateData } = newSkill;
-                await axios.put(`http://localhost:5000/api/skills/${editingId}`, updateData, config);
+                await api.put(`/skills/${editingId}`, updateData, config);
             } else {
-                await axios.post('http://localhost:5000/api/skills', newSkill, config);
+                await api.post('/skills', newSkill, config);
             }
 
             fetchSkills();
@@ -65,7 +65,7 @@ const ManageSkills = () => {
                     Authorization: `Bearer ${user.token}`,
                 },
             };
-            await axios.delete(`http://localhost:5000/api/skills/${id}`, config);
+            await api.delete(`/skills/${id}`, config);
             fetchSkills();
         } catch (error) {
             console.error('Error deleting skill:', error);

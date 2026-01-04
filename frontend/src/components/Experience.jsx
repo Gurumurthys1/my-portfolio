@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../services/api';
 
 const Experience = () => {
     const [experiences, setExperiences] = useState([]);
@@ -11,7 +11,7 @@ const Experience = () => {
 
     const fetchExperiences = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/experience');
+            const { data } = await api.get('/experience');
             setExperiences(data);
         } catch (error) {
             console.error('Error fetching experience:', error);

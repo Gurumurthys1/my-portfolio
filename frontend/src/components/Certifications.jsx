@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import api from '../services/api';
 import { FaExternalLinkAlt } from 'react-icons/fa';
 
 const Certifications = () => {
@@ -13,7 +13,7 @@ const Certifications = () => {
 
     const fetchCertifications = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/certifications');
+            const { data } = await api.get('/certifications');
             setCertifications(data);
             setLoading(false);
         } catch (error) {

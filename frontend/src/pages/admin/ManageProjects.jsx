@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { FaTrash, FaPlus, FaGithub, FaExternalLinkAlt, FaEdit, FaTimes, FaImage } from 'react-icons/fa';
 
@@ -24,7 +24,7 @@ const ManageProjects = () => {
 
     const fetchProjects = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/projects');
+            const { data } = await api.get('/projects');
             setProjects(data);
         } catch (error) {
             console.error('Error fetching projects:', error);
@@ -48,7 +48,7 @@ const ManageProjects = () => {
                 },
             };
 
-            const { data } = await axios.post('http://localhost:5000/api/upload', formData, config);
+            const { data } = await api.post('/upload', formData, config);
             console.log('Upload response:', data);
             setNewProject(prev => ({ ...prev, image: data.url }));
             setUploading(false);
@@ -78,9 +78,9 @@ const ManageProjects = () => {
 
             if (editingId) {
                 const { _id, createdAt, updatedAt, __v, ...updateData } = payload;
-                await axios.put(`http://localhost:5000/api/projects/${editingId}`, updateData, config);
+                await api.put(`/projects/${editingId}`, updateData, config);
             } else {
-                await axios.post('http://localhost:5000/api/projects', payload, config);
+                await api.post('/projects', payload, config);
             }
 
             fetchProjects();
@@ -118,7 +118,7 @@ const ManageProjects = () => {
         if (!window.confirm('Are you sure?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.delete(`http://localhost:5000/api/projects/${id}`, config);
+            await api.delete(`/projects/${id}`, config);
             fetchProjects();
         } catch (error) {
             console.error('Error deleting project:', error);

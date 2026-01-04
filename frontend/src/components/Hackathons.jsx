@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaTrophy, FaMedal, FaCode } from 'react-icons/fa';
-import axios from 'axios';
+import api from '../services/api';
 
 const Hackathons = () => {
     const [hackathons, setHackathons] = useState([]);
@@ -10,7 +10,7 @@ const Hackathons = () => {
     useEffect(() => {
         const fetchHackathons = async () => {
             try {
-                const { data } = await axios.get('http://localhost:5000/api/hackathons');
+                const { data } = await api.get('/hackathons');
                 setHackathons(data);
             } catch (error) {
                 console.error('Error fetching hackathons:', error);

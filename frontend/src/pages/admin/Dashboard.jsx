@@ -11,7 +11,7 @@ import ManageCertifications from './ManageCertifications';
 import ManageHackathons from './ManageHackathons';
 
 import { getAllSkills, getAllProjects } from '../../services/api';
-import axios from 'axios';
+import api from '../../services/api';
 import { useState, useEffect } from 'react';
 
 const ManageOverview = () => {
@@ -32,8 +32,8 @@ const ManageOverview = () => {
 
                 // Fetch others using axios directly since services might not exporting getAll for all
                 // Assuming endpoints exist based on controllers
-                const expRes = await axios.get('http://localhost:5000/api/experience');
-                const msgRes = await axios.get('http://localhost:5000/api/contact');
+                const expRes = await api.get('/experience');
+                const msgRes = await api.get('/contact');
 
                 setStats({
                     skills: skillsRes.data.length,

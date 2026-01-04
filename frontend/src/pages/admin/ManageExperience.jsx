@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { FaTrash, FaPlus, FaBriefcase, FaEdit, FaTimes } from 'react-icons/fa';
 
@@ -21,7 +21,7 @@ const ManageExperience = () => {
 
     const fetchExperiences = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/experience');
+            const { data } = await api.get('/experience');
             setExperiences(data);
         } catch (error) {
             console.error('Error fetching experience:', error);
@@ -44,9 +44,9 @@ const ManageExperience = () => {
 
             if (editingId) {
                 const { _id, createdAt, updatedAt, __v, ...updateData } = payload;
-                await axios.put(`http://localhost:5000/api/experience/${editingId}`, updateData, config);
+                await api.put(`/experience/${editingId}`, updateData, config);
             } else {
-                await axios.post('http://localhost:5000/api/experience', payload, config);
+                await api.post('/experience', payload, config);
             }
 
             fetchExperiences();
@@ -75,7 +75,7 @@ const ManageExperience = () => {
         if (!window.confirm('Are you sure?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.delete(`http://localhost:5000/api/experience/${id}`, config);
+            await api.delete(`/experience/${id}`, config);
             fetchExperiences();
         } catch (error) {
             console.error('Error deleting experience:', error);

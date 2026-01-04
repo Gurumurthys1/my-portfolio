@@ -5,9 +5,12 @@ import fs from 'fs';
 
 const router = express.Router();
 
+import os from 'os';
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, 'uploads/');
+    // Use system temp directory for serverless compatibility (Vercel/AWS Lambda)
+    cb(null, os.tmpdir());
   },
   filename(req, file, cb) {
     cb(null, `${file.fieldname}-${Date.now()}${file.originalname}`);
@@ -16,10 +19,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Create uploads folder if it doesn't exist
-if (!fs.existsSync('uploads')) {
-    fs.mkdirSync('uploads');
-}
 
 router.post('/', upload.single('image'), async (req, res) => {
   try {
