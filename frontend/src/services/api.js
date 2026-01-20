@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Use deployed backend for both Dev and Prod (Frontend-Only Mode)
-//const API_BASE_URL = 'https://my-portfolio-s2nv.onrender.com/api';
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://my-portfolio-s2nv.onrender.com/api';
+//const API_BASE_URL = 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
