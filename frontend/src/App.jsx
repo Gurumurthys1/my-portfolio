@@ -20,11 +20,43 @@ import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa';
 import Experience from './components/Experience';
 import Certifications from './components/Certifications';
 import Hackathons from './components/Hackathons';
+import { getSections } from './services/api';
+
+// Map database names to Components
+const SECTION_COMPONENTS = {
+    'home': Hero,
+    'projects': Projects,
+    'skills': Skills,
+    'experience': Experience,
+    'certifications': Certifications,
+    'hackathons': Hackathons,
+    'about': About,
+    'contact': Contact
+};
 
 function App() {
     const [loading, setLoading] = useState(true);
+    const [sectionsConfig, setSectionsConfig] = useState([]);
     const location = useLocation();
     const isAdminRoute = location.pathname.startsWith('/admin');
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const { data } = await getSections();
+                // Backend returns sorted by 'order'
+                setSectionsConfig(data);
+            } catch (error) {
+                console.error("Failed to fetch section settings");
+            } finally {
+                // Ensure loading is set to false even if fetch fails to avoid blank screen
+                // Note: The original Loading component handles its own timeout, 
+                // but we can signal it's ready if we wanted to. 
+                // Keeping original loading logic for now, but fetching happened parallel.
+            }
+        };
+        fetchSettings();
+    }, []);
 
     return (
         <AuthProvider>
@@ -53,14 +85,26 @@ function App() {
                             {/* Public Portfolio Routes */}
                             <Route path="/" element={
                                 <main>
-                                    <Hero />
-                                    <Projects />
-                                    <Skills />
-                                    <Experience />
-                                    <Certifications />
-                                    <Hackathons />
-                                    <About />
-                                    <Contact />
+                                    {sectionsConfig.length > 0 ? (
+                                        sectionsConfig
+                                            .filter(section => section.isVisible)
+                                            .map(section => {
+                                                const Component = SECTION_COMPONENTS[section.name];
+                                                return Component ? <Component key={section._id} /> : null;
+                                            })
+                                    ) : (
+                                        // Fallback if fetch failed or runs first time slowly
+                                        <>
+                                            <Hero />
+                                            <Projects />
+                                            <Skills />
+                                            <Experience />
+                                            <Certifications />
+                                            <Hackathons />
+                                            <About />
+                                            <Contact />
+                                        </>
+                                    )}
                                 </main>
                             } />
 

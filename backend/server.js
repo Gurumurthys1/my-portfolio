@@ -11,6 +11,8 @@ import aboutRoutes from './routes/aboutRoutes.js';
 import certificationRoutes from './routes/certificationRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import hackathonRoutes from './routes/hackathonRoutes.js';
+import homeRoutes from './routes/homeRoutes.js';
+import sectionRoutes from './routes/sectionRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -35,6 +37,8 @@ app.use('/api/about', aboutRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/hackathons', hackathonRoutes);
+app.use('/api/sections', sectionRoutes);
+app.use('/api/home', homeRoutes);
 
 // Root route
 app.get('/', (req, res) => {

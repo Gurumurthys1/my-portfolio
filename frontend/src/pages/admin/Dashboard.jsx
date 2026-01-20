@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { FaUser, FaBriefcase, FaCode, FaChartBar, FaSignOutAlt, FaHome, FaEnvelope, FaTrophy } from 'react-icons/fa';
@@ -9,10 +9,10 @@ import ManageAbout from './ManageAbout';
 import ManageMessages from './ManageMessages';
 import ManageCertifications from './ManageCertifications';
 import ManageHackathons from './ManageHackathons';
-
+import ManageHome from './ManageHome';
+import SectionManager from '../../components/admin/SectionManager';
 import { getAllSkills, getAllProjects } from '../../services/api';
 import api from '../../services/api';
-import { useState, useEffect } from 'react';
 
 const ManageOverview = () => {
     const [stats, setStats] = useState({
@@ -114,6 +114,8 @@ const Dashboard = () => {
 
     const navItems = [
         { path: '/admin/dashboard', icon: <FaHome />, label: 'Overview' },
+        { path: '/admin/dashboard/home', icon: <FaHome />, label: 'Home / Hero' }, // Added
+        { path: '/admin/dashboard/sections', icon: <FaCode />, label: 'Sections' },
         { path: '/admin/dashboard/skills', icon: <FaChartBar />, label: 'Skills' },
         { path: '/admin/dashboard/experience', icon: <FaBriefcase />, label: 'Experience' },
         { path: '/admin/dashboard/projects', icon: <FaCode />, label: 'Projects' },
@@ -166,6 +168,8 @@ const Dashboard = () => {
             <main className="flex-1 ml-64 p-8">
                 <Routes>
                     <Route path="/" element={<ManageOverview />} />
+                    <Route path="home" element={<ManageHome />} />
+                    <Route path="sections" element={<SectionManager token={user?.token} />} />
                     <Route path="skills" element={<ManageSkills />} />
                     <Route path="experience" element={<ManageExperience />} />
                     <Route path="projects" element={<ManageProjects />} />

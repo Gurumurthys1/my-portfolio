@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api'; // Use centralized API
 import { useAuth } from '../../context/AuthContext';
 import { FaSave, FaUserEdit } from 'react-icons/fa';
 
@@ -21,9 +21,10 @@ const ManageAbout = () => {
 
     const fetchAbout = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/about');
+            const { data } = await api.get('/about'); // Uses base URL from api.js
             if (data) {
-                setAbout(data);
+                // Ensure we handle case where data might be wrapped or just the object
+                setAbout(data[0] || data); // Assuming endpoint returns array or object
             }
             setLoading(false);
         } catch (error) {
@@ -38,7 +39,9 @@ const ManageAbout = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
-            await axios.post('http://localhost:5000/api/about', about, config);
+            // Check if we are creating or updating. API might expect POST for both or PUT. 
+            // Previous code used POST. Sticking to it.
+            await api.post('/about', about, config);
             alert('About section updated successfully!');
         } catch (error) {
             console.error('Error updating about:', error);

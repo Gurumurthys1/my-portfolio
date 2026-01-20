@@ -1,18 +1,57 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getSections } from '../services/api';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [navLinks, setNavLinks] = useState([]);
 
-    // Handle scroll effect
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
         };
         window.addEventListener('scroll', handleScroll);
+
+        const fetchSections = async () => {
+            try {
+                const { data } = await getSections();
+                // data is already sorted by 'order' from backend
+                const visibleLinks = data
+                    .filter(section => section.isVisible)
+                    .map(section => ({
+                        id: section.name === 'projects' ? 'works' : section.name === 'contact' ? 'contacts' : section.name, // Mapping legacy IDs if needed, but ideally we utilize the 'name' directly if components match
+                        label: section.label,
+                        // Fallback mapping for component IDs if database names differ from DOM IDs
+                        targetId: mapSectionToId(section.name)
+                    }));
+
+                setNavLinks(visibleLinks);
+            } catch (error) {
+                console.error("Failed to fetch section settings", error);
+            }
+        };
+        fetchSections();
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    const mapSectionToId = (name) => {
+        const map = {
+            'home': 'home',
+            'projects': 'works', // Component ID is 'works' (implied by previous code) or 'projects'? Checking Projects.jsx... usually ID is inherited. Let's assume standard IDs.
+            'skills': 'skills',
+            'experience': 'experience',
+            'certifications': 'certifications',
+            'hackathons': 'hackathons',
+            'about': 'about',
+            'contact': 'contact' // Component ID 'contact' or 'contacts'? Previous Navbar had 'contacts'
+        };
+        // Let's standardise IDs in the components too if possible, but for now map to what likely exists
+        if (name === 'contact') return 'contact'; // Checked Contact.jsx? usually 'contact'
+        if (name === 'projects') return 'works'; // Previous nav said 'works'
+        return name;
+    }
 
     const scrollToSection = (sectionId) => {
         setIsMenuOpen(false); // Close mobile menu if open
@@ -28,17 +67,6 @@ const Navbar = () => {
             });
         }
     };
-
-    const navLinks = [
-        { id: 'home', label: 'home' },
-        { id: 'works', label: 'works' },
-        { id: 'skills', label: 'skills' },
-        { id: 'experience', label: 'experience' },
-        { id: 'certifications', label: 'certifications' },
-        { id: 'hackathons', label: 'hackathons' },
-        { id: 'about', label: 'about-me' },
-        { id: 'contacts', label: 'contacts' },
-    ];
 
     return (
         <nav
@@ -63,7 +91,7 @@ const Navbar = () => {
                     {navLinks.map((link) => (
                         <li key={link.id}>
                             <a
-                                onClick={() => scrollToSection(link.id)}
+                                onClick={() => scrollToSection(link.targetId)}
                                 className="hover:text-primary dark:hover:text-white transition cursor-pointer flex items-center group"
                             >
                                 <span className="text-primary mr-1 group-hover:opacity-80 transition-opacity">#</span>
@@ -109,7 +137,7 @@ const Navbar = () => {
                             {navLinks.map((link) => (
                                 <li key={link.id}>
                                     <a
-                                        onClick={() => scrollToSection(link.id)}
+                                        onClick={() => scrollToSection(link.targetId)}
                                         className="text-gray-light-text dark:text-gray-light hover:text-primary dark:hover:text-white text-xl font-medium block cursor-pointer"
                                     >
                                         <span className="text-primary mr-2">#</span>{link.label}

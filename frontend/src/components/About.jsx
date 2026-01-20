@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import api from '../services/api';
 
 const About = () => {
+    const [aboutData, setAboutData] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchAbout = async () => {
+            try {
+                const { data } = await api.get('/about');
+                setAboutData(data);
+            } catch (error) {
+                console.error("Failed to fetch about data", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAbout();
+    }, []);
+
+    if (loading) return null; // Or a skeleton loader
+    if (!aboutData) return null;
+
     return (
         <section id="about" className="py-24 bg-gray-light-bg dark:bg-gray-bg transition-colors duration-300">
             <div className="container">
@@ -17,18 +38,13 @@ const About = () => {
                     >
                         <div className="space-y-4 text-gray-light-text dark:text-gray-light max-w-lg">
                             <p className="text-gray-light-text dark:text-gray-light leading-relaxed">
-                                Hello, i'm Gurumurthy!
+                                Hello, i'm <span className="text-primary font-semibold">Gurumurthy!</span>
                             </p>
                             <p>
-                                Aspiring Machine Learning Engineer and third-year B.Tech student in Artificial Intelligence
-                                and Data Science with a strong foundation in machine learning, data analysis, and
-                                full-stack development.
-                            </p>
-
-                            <p>
-                                Experienced in building and deploying end-to-end ML-driven applications using Python,
-                                TensorFlow, and Scikit-learn. Proficient in integrating ML models into real-world web
-                                systems with the MERN stack.
+                                {aboutData.role && (
+                                    <span className="block mb-2 font-medium">{aboutData.role}</span>
+                                )}
+                                {aboutData.bio}
                             </p>
 
                             <button className="btn-primary mt-6">
@@ -48,8 +64,8 @@ const About = () => {
                         {/* Image Container */}
                         <div className="relative z-10">
                             <img
-                                src="/images/Image-2.png"
-                                alt="About Elias"
+                                src={aboutData.image || "/images/Image-2.png"}
+                                alt="About Profile"
                                 className="max-h-[400px] object-contain relative z-10"
                             />
 

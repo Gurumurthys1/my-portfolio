@@ -1,8 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub, FaDribbble, FaFigma } from 'react-icons/fa';
+import api from '../services/api';
 
 const Hero = () => {
+    const [heroData, setHeroData] = useState(null);
+
+    useEffect(() => {
+        const fetchHero = async () => {
+            try {
+                const { data } = await api.get('/home');
+                setHeroData(data);
+            } catch (error) {
+                console.error("Failed to fetch home data", error);
+            }
+        };
+        fetchHero();
+    }, []);
+
+    const title = heroData?.title || "Gurumurthy is a Data Scientist";
+    const subtitle = heroData?.subtitle || "Software Developer (MERN) | ML & Computer Vision";
+    const description = heroData?.description || "Building state-of-the-art AI solutions and responsive web applications where technologies meet creativity.";
+    const status = heroData?.status || "Currently working on Portfolio";
+    const image = heroData?.image || "/images/Image.png";
+
     return (
         <section id="home" className="min-h-screen flex items-center pt-20 pb-16 bg-gray-light-bg dark:bg-gray-bg relative overflow-hidden transition-colors duration-300">
             {/* Background Glow */}
@@ -18,12 +38,12 @@ const Hero = () => {
                         className="z-20 relative"
                     >
                         <h1 className="text-3xl md:text-4xl lg:text-5xl text-gray-light-text dark:text-white font-semibold mb-8 leading-tight">
-                            Gurumurthy is a Data Scientist | <span className="text-primary">Software Developer (MERN)</span> | ML & Computer Vision
+                            {title} | <span className="text-primary">{subtitle}</span>
                             <span className="animate-pulse text-gray-light-text dark:text-white">|</span>
                         </h1>
 
                         <p className="text-gray-light-text dark:text-gray-light mb-8 leading-relaxed max-w-lg text-lg">
-                            Building state-of-the-art AI solutions and responsive web applications where technologies meet creativity.
+                            {description}
                         </p>
 
                         <div className="flex flex-wrap gap-4">
@@ -70,7 +90,7 @@ const Hero = () => {
                             {/* Main Image */}
                             <div className="relative z-10">
                                 <img
-                                    src="/images/Image.png"
+                                    src={image}
                                     alt="Gurumurthy"
                                     className="w-full h-auto object-contain relative z-10 grayscale hover:grayscale-0 transition duration-500"
                                     onError={(e) => {
@@ -88,7 +108,7 @@ const Hero = () => {
                             <div className="absolute -bottom-4 right-0 w-[90%] z-20 bg-gray-light-bg dark:bg-gray-bg border border-gray-light-border dark:border-gray-border p-2 flex items-center gap-4 shadow-xl">
                                 <div className="w-4 h-4 bg-primary mx-2"></div>
                                 <div className="text-gray-light-text dark:text-gray-light text-sm font-medium">
-                                    Currently working on <span className="text-gray-light-text dark:text-white font-bold">Portfolio</span>
+                                    {status}
                                 </div>
                             </div>
                         </div>
@@ -100,4 +120,3 @@ const Hero = () => {
 };
 
 export default Hero;
-
