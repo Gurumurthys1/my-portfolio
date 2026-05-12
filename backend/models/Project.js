@@ -26,6 +26,10 @@ const projectSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  isLiveEnabled: {
+    type: Boolean,
+    default: true
+  },
   category: {
     type: String,
     enum: ['web', 'mobile', 'ai', 'fullstack', 'other'],

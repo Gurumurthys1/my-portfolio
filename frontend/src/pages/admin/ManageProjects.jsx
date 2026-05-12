@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { FaTrash, FaPlus, FaGithub, FaExternalLinkAlt, FaEdit, FaTimes, FaImage } from 'react-icons/fa';
+import ImageCropper from '../../components/admin/ImageCropper';
 
 const ManageProjects = () => {
     const [projects, setProjects] = useState([]);
@@ -12,10 +13,13 @@ const ManageProjects = () => {
         image: '/images/project-placeholder.jpg',
         githubUrl: '',
         liveUrl: '',
+        isLiveEnabled: true,
         category: 'web',
-        featured: false
+        featured: false,
+        order: 0
     });
     const [editingId, setEditingId] = useState(null);
+    const [cropImageSrc, setCropImageSrc] = useState(null);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -36,9 +40,19 @@ const ManageProjects = () => {
     const uploadFileHandler = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        
+        // Use FileReader to read the image as a data URL for the cropper
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            setCropImageSrc(reader.result?.toString() || '');
+        });
+        reader.readAsDataURL(file);
+    };
 
+    const handleCropComplete = async (croppedFile) => {
+        setCropImageSrc(null); // Close cropper modal
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('image', croppedFile);
         setUploading(true);
 
         try {
@@ -58,6 +72,10 @@ const ManageProjects = () => {
             alert(`Upload Failed: ${errorMsg}`);
             setUploading(false);
         }
+    };
+
+    const handleCropCancel = () => {
+        setCropImageSrc(null);
     };
 
 
@@ -94,6 +112,7 @@ const ManageProjects = () => {
     const handleEditClick = (project) => {
         setNewProject({
             ...project,
+            isLiveEnabled: project.isLiveEnabled !== false, // Default to true if undefined
             technologies: project.technologies.join(', ')
         });
         setEditingId(project._id);
@@ -108,8 +127,10 @@ const ManageProjects = () => {
             image: '/images/project-placeholder.jpg',
             githubUrl: '',
             liveUrl: '',
+            isLiveEnabled: true,
             category: 'web',
-            featured: false
+            featured: false,
+            order: 0
         });
         setEditingId(null);
     };
@@ -205,15 +226,37 @@ const ManageProjects = () => {
                         className="w-full bg-gray-bg border border-gray-border text-white p-3 rounded focus:border-primary outline-none h-24"
                         required
                     />
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="checkbox"
-                            id="featured"
-                            checked={newProject.featured}
-                            onChange={(e) => setNewProject({ ...newProject, featured: e.target.checked })}
-                            className="w-4 h-4 accent-primary"
-                        />
-                        <label htmlFor="featured" className="text-gray-light cursor-pointer">Featured Project</label>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="isLiveEnabled"
+                                checked={newProject.isLiveEnabled}
+                                onChange={(e) => setNewProject({ ...newProject, isLiveEnabled: e.target.checked })}
+                                className="w-4 h-4 accent-primary"
+                            />
+                            <label htmlFor="isLiveEnabled" className="text-gray-light cursor-pointer">Enable Live Button</label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="featured"
+                                checked={newProject.featured}
+                                onChange={(e) => setNewProject({ ...newProject, featured: e.target.checked })}
+                                className="w-4 h-4 accent-primary"
+                            />
+                            <label htmlFor="featured" className="text-gray-light cursor-pointer">Featured Project</label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <label htmlFor="order" className="text-gray-light">Display Order:</label>
+                            <input
+                                type="number"
+                                id="order"
+                                value={newProject.order}
+                                onChange={(e) => setNewProject({ ...newProject, order: parseInt(e.target.value) || 0 })}
+                                className="w-20 bg-gray-bg border border-gray-border text-white p-2 rounded focus:border-primary outline-none"
+                            />
+                        </div>
                     </div>
 
                     <div className="flex gap-4">
@@ -267,6 +310,15 @@ const ManageProjects = () => {
                     </div>
                 ))}
             </div>
+            
+            {cropImageSrc && (
+                <ImageCropper 
+                    imageSrc={cropImageSrc}
+                    onCropComplete={handleCropComplete}
+                    onCancel={handleCropCancel}
+                    aspect={16 / 9} // Project images are usually 16:9
+                />
+            )}
         </div>
     );
 };

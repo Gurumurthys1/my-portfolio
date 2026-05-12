@@ -91,33 +91,46 @@ const Hackathons = () => {
                             <p className="text-gray-500 italic">No winning moments added yet.</p>
                         )}
 
-                        {winningMoments.map((win, index) => (
+                        {winningMoments.map((win, index) => {
+                            const isLeftRight = win.imageLayout === 'left-right';
+                            
+                            return (
                             <motion.div
                                 key={win._id}
                                 whileHover={{ scale: 1.02 }}
-                                className="relative group overflow-hidden rounded-xl border border-gray-light-border dark:border-gray-border bg-gray-dark"
+                                className={`relative group overflow-hidden rounded-xl border border-gray-light-border dark:border-gray-border bg-gray-dark ${isLeftRight ? 'flex flex-row' : ''}`}
                             >
-                                <div className="w-full h-full relative">
+                                <div className={`${isLeftRight ? 'w-2/5' : 'w-full'} h-full min-h-[200px] relative`}>
                                     <img
                                         src={win.image || '/images/project-placeholder.jpg'}
                                         alt={win.name}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-70 group-hover:opacity-100 absolute inset-0"
                                     />
                                     <div className="absolute top-4 right-4 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-2">
                                         <FaMedal /> {win.prize}
                                     </div>
                                 </div>
-                                <div className="p-4 bg-white dark:bg-gray-800 absolute bottom-0 left-0 right-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                                    <h4 className="text-lg font-bold text-gray-900 dark:text-white">{win.name}</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">{win.description}</p>
-                                </div>
+                                
+                                {isLeftRight ? (
+                                    <div className="w-3/5 p-6 bg-white dark:bg-gray-800 flex flex-col justify-center">
+                                        <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{win.name}</h4>
+                                        <p className="text-sm text-gray-600 dark:text-gray-300">{win.description}</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="p-4 bg-white dark:bg-gray-800 absolute bottom-0 left-0 right-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white">{win.name}</h4>
+                                            <p className="text-sm text-gray-600 dark:text-gray-300">{win.description}</p>
+                                        </div>
 
-                                {/* Always visible title overlay gradient if not hovering */}
-                                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-300 pointer-events-none">
-                                    <h4 className="text-lg font-bold text-white">{win.name}</h4>
-                                </div>
+                                        {/* Always visible title overlay gradient if not hovering */}
+                                        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-0 transition-opacity duration-300 pointer-events-none">
+                                            <h4 className="text-lg font-bold text-white">{win.name}</h4>
+                                        </div>
+                                    </>
+                                )}
                             </motion.div>
-                        ))}
+                        )})}
                     </motion.div>
                 </div>
             </div>

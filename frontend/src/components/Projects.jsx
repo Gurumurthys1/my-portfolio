@@ -70,12 +70,14 @@ const Projects = () => {
                                 </p>
                                 <div className="flex gap-4">
                                     <div className="flex gap-4">
-                                        <a
-                                            href={project.liveUrl || '#'}
-                                            className="px-4 py-2 border border-primary text-gray-light-text dark:text-white text-sm hover:bg-primary/10 transition flex items-center gap-2"
-                                        >
-                                            Live <span className="text-gray-light-text dark:text-gray-light">&lt;~&gt;</span>
-                                        </a>
+                                        {project.isLiveEnabled !== false && (
+                                            <a
+                                                href={project.liveUrl || '#'}
+                                                className="px-4 py-2 border border-primary text-gray-light-text dark:text-white text-sm hover:bg-primary/10 transition flex items-center gap-2"
+                                            >
+                                                Live <span className="text-gray-light-text dark:text-gray-light">&lt;~&gt;</span>
+                                            </a>
+                                        )}
                                         <a
                                             href={project.githubUrl || '#'}
                                             className="px-4 py-2 border border-gray-light-border dark:border-gray-border text-gray-light-text dark:text-gray-light text-sm hover:border-primary hover:text-primary dark:hover:text-white transition flex items-center gap-2"

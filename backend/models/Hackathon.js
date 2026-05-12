@@ -16,6 +16,11 @@ const hackathonSchema = mongoose.Schema({
         type: String,
         default: ''
     },
+    imageLayout: {
+        type: String,
+        enum: ['top-down', 'left-right'],
+        default: 'top-down'
+    },
     prize: {
         type: String,
         default: ''

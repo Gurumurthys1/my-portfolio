@@ -13,7 +13,7 @@ const getHackathons = asyncHandler(async (req, res) => {
 // @route   POST /api/hackathons
 // @access  Private (Admin)
 const createHackathon = asyncHandler(async (req, res) => {
-    const { name, type, image, prize, description, location } = req.body;
+    const { name, type, image, imageLayout, prize, description, location } = req.body;
 
     if (!name) {
         res.status(400);
@@ -24,6 +24,7 @@ const createHackathon = asyncHandler(async (req, res) => {
         name,
         type: type || 'participation',
         image,
+        imageLayout: imageLayout || 'top-down',
         prize,
         description,
         location

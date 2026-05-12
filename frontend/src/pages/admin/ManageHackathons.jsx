@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { FaTrash, FaPlus, FaEdit, FaTimes, FaImage, FaTrophy, FaList } from 'react-icons/fa';
+import ImageCropper from '../../components/admin/ImageCropper';
 
 const ManageHackathons = () => {
     const [hackathons, setHackathons] = useState([]);
@@ -9,11 +10,13 @@ const ManageHackathons = () => {
         name: '',
         type: 'participation', // participation or win
         image: '',
+        imageLayout: 'top-down',
         prize: '',
         description: '',
         location: ''
     });
     const [editingId, setEditingId] = useState(null);
+    const [cropImageSrc, setCropImageSrc] = useState(null);
     const [uploading, setUploading] = useState(false);
     const { user } = useAuth();
 
@@ -34,8 +37,17 @@ const ManageHackathons = () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        const reader = new FileReader();
+        reader.addEventListener('load', () => {
+            setCropImageSrc(reader.result?.toString() || '');
+        });
+        reader.readAsDataURL(file);
+    };
+
+    const handleCropComplete = async (croppedFile) => {
+        setCropImageSrc(null);
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('image', croppedFile);
         setUploading(true);
 
         try {
@@ -51,6 +63,11 @@ const ManageHackathons = () => {
             alert('Upload failed');
         }
     };
+
+    const handleCropCancel = () => {
+        setCropImageSrc(null);
+    };
+
 
     const handleSave = async (e) => {
         e.preventDefault();
@@ -95,6 +112,7 @@ const ManageHackathons = () => {
             name: '',
             type: 'participation',
             image: '',
+            imageLayout: 'top-down',
             prize: '',
             description: '',
             location: ''
@@ -184,12 +202,40 @@ const ManageHackathons = () => {
                     </div>
 
                     {newHackathon.type === 'win' && (
-                        <textarea
-                            placeholder="Description / Details"
-                            value={newHackathon.description}
-                            onChange={(e) => setNewHackathon({ ...newHackathon, description: e.target.value })}
-                            className="w-full bg-gray-bg border border-gray-border text-white p-3 rounded focus:border-primary outline-none h-24"
-                        />
+                        <>
+                            <textarea
+                                placeholder="Description / Details"
+                                value={newHackathon.description}
+                                onChange={(e) => setNewHackathon({ ...newHackathon, description: e.target.value })}
+                                className="w-full bg-gray-bg border border-gray-border text-white p-3 rounded focus:border-primary outline-none h-24 mb-4"
+                            />
+                            
+                            <div className="flex gap-4 mb-4">
+                                <label className="text-gray-400">Image Layout:</label>
+                                <label className="flex items-center gap-2 text-white cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="imageLayout"
+                                        value="top-down"
+                                        checked={newHackathon.imageLayout === 'top-down'}
+                                        onChange={(e) => setNewHackathon({ ...newHackathon, imageLayout: 'top-down' })}
+                                        className="accent-primary"
+                                    />
+                                    Top-Down
+                                </label>
+                                <label className="flex items-center gap-2 text-white cursor-pointer">
+                                    <input
+                                        type="radio"
+                                        name="imageLayout"
+                                        value="left-right"
+                                        checked={newHackathon.imageLayout === 'left-right'}
+                                        onChange={(e) => setNewHackathon({ ...newHackathon, imageLayout: 'left-right' })}
+                                        className="accent-primary"
+                                    />
+                                    Left-Right
+                                </label>
+                            </div>
+                        </>
                     )}
 
                     <div className="flex gap-4">
@@ -232,6 +278,15 @@ const ManageHackathons = () => {
                     </div>
                 ))}
             </div>
+            
+            {cropImageSrc && (
+                <ImageCropper 
+                    imageSrc={cropImageSrc}
+                    onCropComplete={handleCropComplete}
+                    onCancel={handleCropCancel}
+                    aspect={newHackathon.imageLayout === 'left-right' ? 4 / 3 : 16 / 9} // Dynamic aspect ratio
+                />
+            )}
         </div>
     );
 };
