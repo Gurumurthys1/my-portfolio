@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { FaTrash, FaPlus, FaImage, FaEdit } from 'react-icons/fa';
 
 const ManageCertifications = () => {
@@ -21,7 +21,7 @@ const ManageCertifications = () => {
 
     const fetchCertifications = async () => {
         try {
-            const { data } = await axios.get('/certifications');
+            const { data } = await api.get('/certifications');
             setCertifications(data);
             setLoading(false);
         } catch (error) {
@@ -60,7 +60,7 @@ const ManageCertifications = () => {
                 },
             };
 
-            const { data } = await axios.post('http://localhost:5000/api/upload', formData, config);
+            const { data } = await api.post('/upload', formData, config);
             console.log('Upload response:', data); // Debug log
             setFormData(prev => ({ ...prev, imageUrl: data.url }));
             setLoading(false);
@@ -93,11 +93,11 @@ const ManageCertifications = () => {
 
             if (editingId) {
                 // Update existing
-                await axios.put(`http://localhost:5000/api/certifications/${editingId}`, certData);
+                await api.put(`/certifications/${editingId}`, certData);
                 setEditingId(null);
             } else {
                 // Create new
-                await axios.post('http://localhost:5000/api/certifications', certData);
+                await api.post('/certifications', certData);
             }
 
             setFormData({
@@ -117,7 +117,7 @@ const ManageCertifications = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this certification?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/certifications/${id}`);
+                await api.delete(`/certifications/${id}`);
                 fetchCertifications();
             } catch (error) {
                 console.error('Error deleting certification:', error);

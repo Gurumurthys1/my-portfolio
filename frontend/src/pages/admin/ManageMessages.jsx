@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { FaCalendar, FaEnvelope, FaUser } from 'react-icons/fa';
 
 const ManageMessages = () => {
@@ -12,7 +12,7 @@ const ManageMessages = () => {
 
     const fetchMessages = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/contact');
+            const { data } = await api.get('/contact');
             setMessages(data);
         } catch (error) {
             console.error('Error fetching messages:', error);
