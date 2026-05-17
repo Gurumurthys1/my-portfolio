@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { FaTrash, FaPlus, FaEdit, FaTimes, FaImage, FaTrophy, FaList } from 'react-icons/fa';
 import ImageCropper from '../../components/admin/ImageCropper';
@@ -26,7 +26,7 @@ const ManageHackathons = () => {
 
     const fetchHackathons = async () => {
         try {
-            const { data } = await axios.get('/hackathons');
+            const { data } = await api.get('/hackathons');
             setHackathons(data);
         } catch (error) {
             console.error('Error fetching hackathons:', error);
@@ -54,7 +54,7 @@ const ManageHackathons = () => {
             const config = {
                 headers: { 'Content-Type': 'multipart/form-data' },
             };
-            const { data } = await axios.post('http://localhost:5000/api/upload', formData, config);
+            const { data } = await api.post('/upload', formData, config);
             setNewHackathon(prev => ({ ...prev, image: data.url }));
             setUploading(false);
         } catch (error) {
@@ -77,9 +77,9 @@ const ManageHackathons = () => {
             };
 
             if (editingId) {
-                await axios.put(`http://localhost:5000/api/hackathons/${editingId}`, newHackathon, config);
+                await api.put(`/hackathons/${editingId}`, newHackathon, config);
             } else {
-                await axios.post('http://localhost:5000/api/hackathons', newHackathon, config);
+                await api.post('/hackathons', newHackathon, config);
             }
 
             fetchHackathons();
@@ -100,7 +100,7 @@ const ManageHackathons = () => {
         if (!window.confirm('Are you sure?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.delete(`http://localhost:5000/api/hackathons/${id}`, config);
+            await api.delete(`/hackathons/${id}`, config);
             fetchHackathons();
         } catch (error) {
             console.error('Error deleting hackathon:', error);
