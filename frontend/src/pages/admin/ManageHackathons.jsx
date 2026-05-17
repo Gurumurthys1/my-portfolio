@@ -26,7 +26,7 @@ const ManageHackathons = () => {
 
     const fetchHackathons = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/hackathons');
+            const { data } = await axios.get('/hackathons');
             setHackathons(data);
         } catch (error) {
             console.error('Error fetching hackathons:', error);

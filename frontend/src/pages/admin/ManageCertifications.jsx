@@ -21,7 +21,7 @@ const ManageCertifications = () => {
 
     const fetchCertifications = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/certifications');
+            const { data } = await axios.get('/certifications');
             setCertifications(data);
             setLoading(false);
         } catch (error) {
