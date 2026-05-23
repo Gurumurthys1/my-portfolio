@@ -91,7 +91,7 @@ const Hero = () => {
                             <div className="relative z-10">
                                 <img
                                     src={image}
-                                    alt="Gurumurthy"
+                                    alt="Gurumurthy S - Software Developer and Data Scientist"
                                     className="w-full h-auto object-contain relative z-10 grayscale hover:grayscale-0 transition duration-500"
                                     onError={(e) => {
                                         e.target.style.display = 'none';
