@@ -17,7 +17,7 @@ const Hero = () => {
         fetchHero();
     }, []);
 
-    const title = heroData?.title || "Gurumurthy is a Data Scientist";
+    const title = heroData?.title || "Gurumurthy S (Guru) - Software Developer Portfolio";
     const subtitle = heroData?.subtitle || "Software Developer (MERN) | ML & Computer Vision";
     const description = heroData?.description || "Building state-of-the-art AI solutions and responsive web applications where technologies meet creativity.";
     const status = heroData?.status || "Currently working on Portfolio";

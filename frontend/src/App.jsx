@@ -73,9 +73,9 @@ function App() {
                                 <div className="hidden lg:flex flex-col items-center fixed left-0 top-0 bottom-0 w-24 z-40">
                                     <div className="w-px h-48 bg-gray-light mt-24"></div>
                                     <div className="flex flex-col gap-6 my-6">
-                                        <a href="https://github.com/Gurumurthys1" target="_blank" rel="noopener noreferrer" className="text-gray-light hover:text-white transition"><FaGithub size={24} /></a>
-                                        <a href="https://www.linkedin.com/in/gurumurthys/" target="_blank" rel="noopener noreferrer" className="text-gray-light hover:text-white transition"><FaLinkedin size={24} /></a>
-                                        <a href="mailto:gurumurthys001@gmail.com" className="text-gray-light hover:text-white transition"><FaEnvelope size={24} /></a>
+                                        <a href="https://github.com/Gurumurthys1" target="_blank" rel="noopener noreferrer" className="text-gray-light hover:text-white transition" aria-label="GitHub Profile"><FaGithub size={24} /></a>
+                                        <a href="https://www.linkedin.com/in/gurumurthys/" target="_blank" rel="noopener noreferrer" className="text-gray-light hover:text-white transition" aria-label="LinkedIn Profile"><FaLinkedin size={24} /></a>
+                                        <a href="mailto:gurumurthys001@gmail.com" className="text-gray-light hover:text-white transition" aria-label="Email Me"><FaEnvelope size={24} /></a>
                                     </div>
                                 </div>
                             </>
